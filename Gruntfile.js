@@ -98,10 +98,34 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
   grunt.loadNpmTasks('grunt-contrib-internal');
 
+  //git clone on windows can't copy symlinks properly. 
+  //So, we need to create test symlinks here
+  grunt.registerTask('create-symlink', function() {
+     if (process.platform ==='win32') {
+       var fs = require('fs');
+       if (fs.existsSync('test/fixtures/test2.link.js')) {
+         fs.unlinkSync('test/fixtures/test2.link.js');
+       }
+
+       if (fs.existsSync('test/expected/copy_test_symlink/test2.link.js')) {
+         fs.unlinkSync('test/expected/copy_test_symlink/test2.link.js');
+       }
+
+       try {                       
+         fs.symlinkSync('test/fixtures/test2.js', 'test/fixtures/test2.link.js');
+         fs.symlinkSync('test/fixtures/test2.js', 'test/expected/copy_test_symlink/test2.link.js');
+       } catch(err) {
+         if (err.code === 35) { //symlinks not implemented in os
+         
+         }
+       }
+     }
+  });
+
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'copy', 'nodeunit']);
-
+  grunt.registerTask('test', ['clean', 'create-symlink', 'copy', 'nodeunit']);
+  
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test', 'build-contrib']);
 };

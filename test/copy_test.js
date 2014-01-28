@@ -61,11 +61,7 @@ exports.copy = {
 
     test.expect(1);
 
-    if (process.platform === 'win32') {
-      test.ok(true);
-    } else {
-      test.ok(fs.lstatSync('tmp/copy_test_symlink/test2.link.js').isSymbolicLink());
-    }
+    test.ok(fs.lstatSync('tmp/copy_test_symlink/test2.link.js').isSymbolicLink());
 
     test.done();
   },

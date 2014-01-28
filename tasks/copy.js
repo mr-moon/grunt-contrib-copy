@@ -61,7 +61,7 @@ module.exports = function(grunt) {
           grunt.verbose.writeln('Copying ' + chalk.cyan(src) + ' -> ' + chalk.cyan(dest));
           srcStat = fs.lstatSync(src);
           isLink = srcStat.isSymbolicLink();
-          if (options.copySymlinkAsSymlink && process.platform !== 'win32' && isLink) {
+          if (options.copySymlinkAsSymlink && isLink) {
             grunt.file.mkdir(path.dirname(dest));
             if (grunt.file.exists(dest)) {
               grunt.file.delete(dest);
